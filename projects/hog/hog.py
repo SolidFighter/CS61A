@@ -338,7 +338,12 @@ def make_averaged(fn, num_samples=1000):
     3.75
     """
     # BEGIN PROBLEM 7
-    "*** REPLACE THIS LINE ***"
+    def averaged(*args):
+        result = 0
+        for _ in range(num_samples):
+            result += fn(*args)
+        return result / num_samples
+    return averaged
     # END PROBLEM 7
 
 
@@ -352,7 +357,13 @@ def max_scoring_num_rolls(dice=six_sided, num_samples=1000):
     10
     """
     # BEGIN PROBLEM 8
-    "*** REPLACE THIS LINE ***"
+    max_score = 0
+    for num_rolls in range(1, 11):
+        averaged_score = make_averaged(roll_dice, num_samples)(num_rolls, dice)
+        if averaged_score > max_score:
+            min_num_rolls = num_rolls
+            max_score = averaged_score
+    return min_num_rolls
     # END PROBLEM 8
 
 
