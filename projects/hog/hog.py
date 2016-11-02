@@ -20,7 +20,6 @@ def roll_dice(num_rolls, dice=six_sided):
     assert type(num_rolls) == int, 'num_rolls must be an integer.'
     assert num_rolls > 0, 'Must roll at least once.'
     # BEGIN PROBLEM 1
-    "*** REPLACE THIS LINE ***"
     total = 0
     for _ in range(num_rolls):
         point = dice()
@@ -397,7 +396,7 @@ def run_experiments():
     if False:  # Change to True to test always_roll(8)
         print('always_roll(8) win rate:', average_win_rate(always_roll(8)))
 
-    if False:  # Change to True to test bacon_strategy
+    if True:  # Change to True to test bacon_strategy
         print('bacon_strategy win rate:', average_win_rate(bacon_strategy))
 
     if False:  # Change to True to test swap_strategy
@@ -413,8 +412,12 @@ def bacon_strategy(score, opponent_score, margin=8, num_rolls=4):
     and rolls NUM_ROLLS otherwise.
     """
     # BEGIN PROBLEM 9
-    "*** REPLACE THIS LINE ***"
-    return 4  # Replace this statement
+    bacon_score = free_bacon(opponent_score)
+    if bacon_score >= margin:
+        return 0
+    if hogtimus_prime(bacon_score) >= margin:
+        return 0
+    return num_rolls
     # END PROBLEM 9
 check_strategy(bacon_strategy)
 
@@ -425,20 +428,38 @@ def swap_strategy(score, opponent_score, margin=8, num_rolls=4):
     NUM_ROLLS.
     """
     # BEGIN PROBLEM 10
-    "*** REPLACE THIS LINE ***"
-    return 4  # Replace this statement
+    if opponent_score == 2 * score:
+        return 0
+    return bacon_strategy(score, opponent_score, margin, num_rolls)
     # END PROBLEM 10
 check_strategy(swap_strategy)
 
 
 def final_strategy(score, opponent_score):
-    """Write a brief description of your final strategy.
-
-    *** YOUR DESCRIPTION HERE ***
+    """This final strategy implements strategies in order to achieve a high
+    chance of winning Hog. First, the Pork Chop rule is utilized, switching
+    the six-sided dice to the four-sided dice. Next are strategies that
+    account for the various rules in the game (Hog Wild, Free Bacon, IsPrime
+    etc.), but if none of the conditions are met, then five dice will be
+    rolled since that is the best amount of dice to roll with four-sided
+    to achieve maximum score.
     """
     # BEGIN PROBLEM 11
-    "*** REPLACE THIS LINE ***"
-    return 4  # Replace this statement
+    margin = 6
+    if score == 0:
+        return -1
+    elif hogtimus_prime(free_bacon(opponent_score)) >= margin:
+        return 0
+    elif (score + opponent_score + 1) % 7 == 0:
+        return swap_strategy(score, opponent_score, 10, 10)
+    elif score * 2 == opponent_score or score == 2 * opponent_score:
+        return swap_strategy(score, opponent_score, 3, 2)
+    elif score > opponent_score:
+        return 0
+    elif score < opponent_score:
+        return swap_strategy(score, opponent_score, 5, 5)
+    else:
+        return 5
     # END PROBLEM 11
 check_strategy(final_strategy)
 
